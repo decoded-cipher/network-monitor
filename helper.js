@@ -1,4 +1,5 @@
 const ping = require('ping');
+var nodemailer = require('nodemailer');
 
 var Hosts = [
     {
@@ -26,7 +27,7 @@ var Prev_Status = [
         name: process.env.HOSTNAME_02,
         status: ''
     }
-]
+];
 
 module.exports = {
     
@@ -57,6 +58,8 @@ module.exports = {
                             console.log("Previous status: " + Prev_Status[i].status);
                             console.log("New status: " + hosts[i].status);
                             console.log("\n");
+
+                            module.exports.sendEmail();
                         }
                         Prev_Status[i].status = hosts[i].status;
                     }
@@ -66,6 +69,33 @@ module.exports = {
             }).catch((err) => {
                 console.log(err);
             });
+        })
+    },
+
+    sendEmail: () => {
+        return new Promise((resolve, reject) => {
+            console.log("Sending email...");
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS
+                }
+            });
+            var mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: process.env.EMAIL_TO,
+                subject: 'Alert: Host Status Changed!',
+                text: 'Host status changed!'
+            };
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+            resolve();
         })
     }
 
