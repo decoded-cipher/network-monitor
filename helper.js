@@ -51,14 +51,14 @@ module.exports = {
             module.exports.pingHosts().then((hosts) => {
                 for (var i = 0; i < Prev_Status.length; i++) {
                     
-                    if (Prev_Status[i].name === hosts[i].name) {
-                        if (Prev_Status[i].status !== hosts[i].status) {
+                    if (Prev_Status[i].status !== hosts[i].status) {
+                        if (Prev_Status[i].status !== '') {
                             console.log("Change in status detected for host: " + hosts[i].name);
                             console.log("Previous status: " + Prev_Status[i].status);
                             console.log("New status: " + hosts[i].status);
                             console.log("\n");
-                            Prev_Status[i].status = hosts[i].status;
                         }
+                        Prev_Status[i].status = hosts[i].status;
                     }
 
                 }
