@@ -17,6 +17,17 @@ var Hosts = [
     }
 ];
 
+var Prev_Status = [
+    {
+        name: process.env.HOSTNAME_01,
+        status: ''
+    },
+    {
+        name: process.env.HOSTNAME_02,
+        status: ''
+    }
+]
+
 module.exports = {
     
     pingHosts: () => {
@@ -32,6 +43,29 @@ module.exports = {
                 });
             });
             resolve(Hosts);
+        })
+    },
+
+    checkForChangeInStatus: () => {
+        return new Promise((resolve, reject) => {
+            module.exports.pingHosts().then((hosts) => {
+                for (var i = 0; i < Prev_Status.length; i++) {
+                    
+                    if (Prev_Status[i].name === hosts[i].name) {
+                        if (Prev_Status[i].status !== hosts[i].status) {
+                            console.log("Change in status detected for host: " + hosts[i].name);
+                            console.log("Previous status: " + Prev_Status[i].status);
+                            console.log("New status: " + hosts[i].status);
+                            console.log("\n");
+                            Prev_Status[i].status = hosts[i].status;
+                        }
+                    }
+
+                }
+                resolve(hosts);
+            }).catch((err) => {
+                console.log(err);
+            });
         })
     }
 
