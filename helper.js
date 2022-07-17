@@ -7,7 +7,6 @@ const path = require('path');
 const filePath = path.join(__dirname, './templates/notify-email.hbs');
 const source = fs.readFileSync(filePath, 'utf-8').toString();
 
-
 var Hosts = [
     {
         date: '',
@@ -66,7 +65,8 @@ module.exports = {
                             console.log("New status: " + hosts[i].status);
                             console.log("\n");
 
-                            module.exports.curateEmailMessage(hosts, hosts[i]).then((message) => {
+                            await module.exports.saveHostsOntoTextFile(hosts);
+                            await module.exports.curateEmailMessage(hosts, hosts[i]).then((message) => {
                                 console.log(message);
                                 module.exports.sendEmail(hosts, message);
                             }).catch((err) => {
@@ -107,7 +107,7 @@ module.exports = {
             });
 
             var mailOptions = {
-                from: process.env.EMAIL_USER,
+                from: `"Mail Notify" <${process.env.EMAIL_USER}>`,
                 to: process.env.EMAIL_TO,
                 subject: 'Alert: Gateway Status Changed!',
                 // text: emailMessage,
@@ -135,6 +135,21 @@ module.exports = {
                 emailMessage = `Gateway '${item.name}' is Up.`;
             }
             resolve(emailMessage);
+        })
+    },
+
+    saveHostsOntoTextFile: (hosts) => {
+        return new Promise((resolve, reject) => {
+            var text = '';
+            hosts.forEach((host) => {
+                text += `${host.date}   ${host.time}    -    ${host.ip}  -   ${host.status}  (${host.name})\n`;
+            });
+            text += '\n';
+            fs.appendFile('./logs.txt', text, (err) => {
+                if (err) throw err;
+                console.log('Hosts saved to file!');
+            });
+            resolve();
         })
     }
 
