@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f1f2;">
+        <tbody>
+            <tr>
+                <td style="line-height:0;font-size:0;padding:3px 20px 0px 20px">
+                    <table align="center" width="800" style="width:700px">
+                        <tbody>
+                            <tr>
+                                <td style="line-height:0;font-size:0">
+
+                                    <table width="100%" align="center" bgcolor=" #ffffff " border="0" cellspacing="0"
+                                        cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td valign="top"
+                                                    style="padding:16px 30px 16px 30px;border:1px solid #dadada">
+                                                    <table width="100" align="center" cellpadding="0" cellspacing="0"
+                                                        border="0" style="width:100px">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <img width="150px;" height="auto"
+                                                                        src="https://user-images.githubusercontent.com/44474792/179398868-b7a3b085-79f5-4481-85d6-6daeb81157b1.png"
+                                                                        alt="">
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table width="100%" align="center" bgcolor="#ffffff" border="0" cellpadding="0"
+                                        cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td
+                                                    style="padding:18px 30px 5px 30px;border-left:1px solid #dadada;border-right:1px solid #dadada">
+                                                    <table border="0" cellpadding="0" cellspacing="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td dir="ltr"
+                                                                    style="padding:0px 0 0 0;font-size:18px;color:#66747e;line-height:24px;font-family:Calibri,Helvetica,sans-serif;text-align:left">
+                                                                    <strong>Alert</strong> for Gateway Monitoring System
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+
+                                    <table width="100%" align="center" bgcolor="#ffffff" border="0" cellpadding="0"
+                                        cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td
+                                                    style="padding:13px 0px 5px 30px; border-left:1px solid #dadada; border-right:1px solid #dadada">
+                                                    <table border="1px solid" cellpadding="0" cellspacing="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    Date</th>
+                                                                <th
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    Time</th>
+                                                                <th
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    Hostname</th>
+                                                                <th
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    IP Address</th>
+                                                                <th
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    Status</th>
+                                                            </tr>
+
+                                                            {{#each hosts}}
+                                                            <tr>
+                                                                <td
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    {{this.date}}</td>
+                                                                <td
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    {{this.time}}</td>
+                                                                <td
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    {{this.name}}</td>
+                                                                <td
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    {{this.ip}}</td>
+                                                                <td
+                                                                    style="padding:5px 20px 5px 20px; font-size:18px; color:#66747e; line-height:24px; font-family:Calibri,Helvetica,sans-serif; text-align:center">
+                                                                    {{this.status}}</td>
+                                                            </tr>
+                                                            {{/each}}
+
+
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table width="100%" align="center" bgcolor="#ffffff" border="0" cellpadding="0"
+                                        cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td
+                                                    style="padding:13px 30px 5px 30px;border-left:1px solid #dadada;border-right:1px solid #dadada">
+                                                    <table border="0" cellpadding="0" cellspacing="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td dir="ltr"
+                                                                    style="padding:0px 0 20px 0;font-size:18px;color:#66747e;line-height:24px;font-family:Calibri,Helvetica,sans-serif;text-align:left">
+                                                                    <strong>Message:</strong><br>
+                                                                    {{message}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+
+                                    <table width="100%" align="center" bgcolor=" #ffffff " border="0" cellpadding="0"
+                                        cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td
+                                                    style="padding:15px 30px 13px 30px;border:1px solid #dadada;font-size:12px;line-height:24px;color:#ffffff;font-family:Calibri,Helvetica,sans-serif;text-align:center">
+                                                    <table align="center" border="0" cellpadding="0" cellspacing="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td
+                                                                    style="padding:5px 0 10px 0;font-size:14px;color:#66747e;line-height:20px;font-family:Calibri,Helvetica,sans-serif;text-align:left">
+                                                                    <strong><em>Note: </em></strong><em>Do not reply to
+                                                                        this email. It's an auto-generated email
+                                                                        notification from your custom-built Gateway Monitoring System.
+                                                                        Contact your ISP to resolve the issue.</em> </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

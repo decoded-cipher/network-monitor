@@ -1,5 +1,12 @@
 const ping = require('ping');
 var nodemailer = require('nodemailer');
+var handlebars = require('handlebars');
+
+const fs = require('fs');
+const path = require('path');
+const filePath = path.join(__dirname, './templates/notify-email.hbs');
+const source = fs.readFileSync(filePath, 'utf-8').toString();
+
 
 var Hosts = [
     {
@@ -49,7 +56,7 @@ module.exports = {
 
     checkForChangeInStatus: () => {
         return new Promise((resolve, reject) => {
-            module.exports.pingHosts().then((hosts) => {
+            module.exports.pingHosts().then(async (hosts) => {
                 for (var i = 0; i < Prev_Status.length; i++) {
                     
                     if (Prev_Status[i].status !== hosts[i].status) {
@@ -59,7 +66,13 @@ module.exports = {
                             console.log("New status: " + hosts[i].status);
                             console.log("\n");
 
-                            module.exports.sendEmail();
+                            module.exports.curateEmailMessage(hosts, hosts[i]).then((message) => {
+                                console.log(message);
+                                module.exports.sendEmail(hosts, message);
+                            }).catch((err) => {
+                                console.log(err);
+                            });
+                            
                         }
                         Prev_Status[i].status = hosts[i].status;
                     }
@@ -72,9 +85,19 @@ module.exports = {
         })
     },
 
-    sendEmail: () => {
+    sendEmail: (hosts, message) => {
         return new Promise((resolve, reject) => {
+            
+            const template = handlebars.compile(source);
+            var replacements = {
+                hosts: hosts,
+                message: message
+            };
+            const htmlToSend = template(replacements);
+
             console.log("Sending email...");
+            console.log("\n" + message);
+            
             var transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -82,12 +105,16 @@ module.exports = {
                     pass: process.env.EMAIL_PASS
                 }
             });
+
             var mailOptions = {
                 from: process.env.EMAIL_USER,
                 to: process.env.EMAIL_TO,
-                subject: 'Alert: Host Status Changed!',
-                text: 'Host status changed!'
+                subject: 'Alert: Gateway Status Changed!',
+                // text: emailMessage,
+                html: htmlToSend,
+                headers: { 'x-myheader': 'test header' }
             };
+            
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.log(error);
@@ -96,6 +123,18 @@ module.exports = {
                 }
             });
             resolve();
+        })
+    },
+
+    curateEmailMessage: (hosts, item) => {
+        return new Promise((resolve, reject) => {
+            var emailMessage = '';
+            if (item.status === 'Inactive') {
+                emailMessage = `Gateway '${item.name}' is Down.`;
+            } else {
+                emailMessage = `Gateway '${item.name}' is Up.`;
+            }
+            resolve(emailMessage);
         })
     }
 
