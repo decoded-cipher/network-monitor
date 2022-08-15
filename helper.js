@@ -6,8 +6,12 @@ var db = require('./config.js');
 
 const fs = require('fs');
 const path = require('path');
-const filePath = path.join(__dirname, './templates/notify-email.hbs');
-const source = fs.readFileSync(filePath, 'utf-8').toString();
+
+const filePath_1 = path.join(__dirname, './templates/notify-email.hbs');
+const source_1 = fs.readFileSync(filePath_1, 'utf-8').toString();
+
+const filePath_2 = path.join(__dirname, './templates/dailyReport-email.hbs');
+const source_2 = fs.readFileSync(filePath_2, 'utf-8').toString();
 
 var CronJob = require('cron').CronJob;
 
@@ -73,13 +77,21 @@ module.exports = {
                             console.log("New status: " + hosts[i].status);
                             console.log("\n");
                             
-                            // await module.exports.saveHostsOntoTextFile(hosts);
+                            await module.exports.saveHostsOntoTextFile(hosts);
 
-                            await module.exports.curateEmailMessage(hosts[i]).then((message) => {
+                            await module.exports.curateEmailMessage(hosts[i]).then(async (message) => {
                                 
                                 console.log(message);
-                                // module.exports.sendEmail(hosts, message);
-                                console.log("Completed sending email...");
+                                notify = true;
+
+                                var template = handlebars.compile(source_1);
+                                var replacements = {
+                                    hosts: hosts,
+                                    message: message
+                                };
+                                var htmlToSend = template(replacements);
+                                await module.exports.sendEmail(htmlToSend, notify);
+                                // console.log("Completed sending email...");
 
                             }).catch((err) => {
                                 console.log(err);
@@ -99,15 +111,8 @@ module.exports = {
         })
     },
 
-    sendEmail: (hosts, message) => {
+    sendEmail: (htmlToSend, notify) => {
         return new Promise((resolve, reject) => {
-            
-            const template = handlebars.compile(source);
-            var replacements = {
-                hosts: hosts,
-                message: message
-            };
-            const htmlToSend = template(replacements);
             
             var transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -123,9 +128,9 @@ module.exports = {
                 console.log("Sending email to " + email);
                 
                 var mailOptions = {
-                    from: `"Mail Notify" <${process.env.EMAIL_USER}>`,
+                    from: notify ? `"Mail Notify" <${process.env.EMAIL_USER}>` : `"Daily Report" <${process.env.EMAIL_USER}>`,
                     to: email,
-                    subject: 'Alert: Gateway Status Changed!',
+                    subject: notify ? 'Alert: Gateway Status Changed!' : 'EOD Report : Gateway Monitoring System',
                     // text: emailMessage,
                     html: htmlToSend,
                     headers: { 'x-myheader': 'test header' }
@@ -253,10 +258,35 @@ module.exports = {
             var job = new CronJob('00 00 00 * * *', async() => {
 
                 await module.exports.processDataForDB(Hosts);
+
+                Hosts.forEach((host) => {
+                    var hours = Math.floor(host.downtime / 3600);
+                    var minutes = Math.floor((host.downtime - (hours * 3600)) / 60);
+                    var seconds = host.downtime - (hours * 3600) - (minutes * 60);
+                    
+                    if (hours > 0) {
+                        host.downtime = `${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                    } else {
+                        if (minutes > 0) {
+                            host.downtime = `${minutes} minutes, ${seconds} seconds`;
+                        } else {
+                            host.downtime = `${seconds} seconds`;
+                        }
+                    }
+                })
+                
+                notify = false;
+
+                var template = handlebars.compile(source_2);
+                var replacements = {
+                    hosts: Hosts
+                };
+                var htmlToSend = template(replacements);
+                await module.exports.sendEmail(htmlToSend, notify);
+
                 Hosts[0].downtime = Hosts[1].downtime = undefined;
 
             } , null, true, 'Asia/Kolkata');
-            
             resolve();
         })
     }
