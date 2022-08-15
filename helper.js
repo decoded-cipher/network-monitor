@@ -106,22 +106,29 @@ module.exports = {
                 }
             });
 
-            var mailOptions = {
-                from: `"Mail Notify" <${process.env.EMAIL_USER}>`,
-                to: process.env.EMAIL_TO,
-                subject: 'Alert: Gateway Status Changed!',
-                // text: emailMessage,
-                html: htmlToSend,
-                headers: { 'x-myheader': 'test header' }
-            };
+            var emailAddress = process.env.EMAIL_TO.split(',');
             
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
-                }
+            emailAddress.forEach(email => {
+                
+                var mailOptions = {
+                    from: `"Mail Notify" <${process.env.EMAIL_USER}>`,
+                    to: email,
+                    subject: 'Alert: Gateway Status Changed!',
+                    // text: emailMessage,
+                    html: htmlToSend,
+                    headers: { 'x-myheader': 'test header' }
+                };
+                
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
             });
+
+
             resolve();
         })
     },

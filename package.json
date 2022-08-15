@@ -4,14 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
-  "author": "",
+  "author": "Decoded_Cipher",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.1",
     "handlebars": "^4.7.7",
     "nodemailer": "^6.7.7",
     "ping": "^0.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
   }
 }
